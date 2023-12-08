@@ -52,6 +52,7 @@ class SandboxClient {
   }
 
   updatePreview(files) {
+    console.log(files['/src/App.ts']);
     this.channel.request('tree-compilation-request', {
       compiler_type: 'vite',
       tree: files

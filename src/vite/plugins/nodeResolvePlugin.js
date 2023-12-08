@@ -13,8 +13,8 @@ const nodeResolvePlugin = ({ tree }) => {
       if (/dist\/__require\.js$/.test(id)) {
         return '/dist/__require.js';
       }
-              
       const dependencyInfos = dependencyNameRE.exec(id);
+
       if (dependencyInfos) {
         if (ssr) {
           return {

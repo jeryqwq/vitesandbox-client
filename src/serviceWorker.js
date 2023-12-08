@@ -10,7 +10,6 @@ registerRoute(
   async ({ request, url, params }) => {
     const [ busid, wcid, pathname ] = params;
     const { href } = url;
-    
     let channel = ChannelMap.get(busid);
     if (!channel) {
       channel = new Channel(busid);
@@ -38,18 +37,18 @@ registerRoute(
   }
 );
 
-registerRoute(
-  /^https:\/\/mcuking\.github\.io\/vitesandbox-client\/static\/js\//,
-  new CacheFirst({
-    cacheName: 'vite-static-root-cache',
-    plugins: [
-      new ExpirationPlugin({
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 day
-        maxEntries: 500
-      })
-    ]
-  })
-);
+// registerRoute(
+//   /^https:\/\/mcuking\.github\.io\/vitesandbox-client\/static\/js\//,
+//   new CacheFirst({
+//     cacheName: 'vite-static-root-cache',
+//     plugins: [
+//       new ExpirationPlugin({
+//         maxAgeSeconds: 7 * 24 * 60 * 60, // 7 day
+//         maxEntries: 500
+//       })
+//     ]
+//   })
+// );
 
 registerRoute(
   /^https:\/\/esm\.sh/,

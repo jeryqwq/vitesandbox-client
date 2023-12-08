@@ -195,6 +195,7 @@ function warnFailedFetch(err, path) {
 }
 let isFirstUpdate = true;
 async function handleMessage(payload) {
+  // debugger
   console.log(payload, 'client 接收到 hmr 消息');
   switch (payload.type) {
   case 'connected':

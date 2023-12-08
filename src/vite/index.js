@@ -59,16 +59,13 @@ async function createCompileContext(projectInfo, wc, parseError) {
 // 根据消息决定初始化编译上下文
 channel.subscribe('tree-compilation-request', async (data) => {
   const { compiler_type, tree } = data;
-
   if (compiler_type === 'vite') {
     const { pkgJson, parseError } = genPkgJson(tree);
     const compileContext = compileContexts.get(wcid);
     let isFileUpdate = compileContext && !compileContext.initError;
     const projectInfo = await genProjectInfo(tree, pkgJson, wcid);
-
     // 向内存文件系统写入需要构建应用的源码
     writeProjectFiles(projectInfo.root, tree);
-
     if (isFileUpdate) {
       const { wc } = compileContext;
 
@@ -120,6 +117,7 @@ channel.subscribe('tree-compilation-request', async (data) => {
     }
 
     if (!isFileUpdate) {
+
       try {
         const compileContext = await createCompileContext(projectInfo, {
           tree,

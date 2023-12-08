@@ -6,21 +6,22 @@ module.exports = {
   entry: {
     main: {
       import: './src/main.js',
-      filename: 'static/js/[name].[contenthash:9].js',
+      filename: 'viteStatic/js/[name].[contenthash:9].js',
       asyncChunks: true,
     },
     'serviceWorker': './src/serviceWorker.js'
   },
   output: {
-    chunkFilename: 'static/js/[name].[contenthash:9].chunk.js',
-    path: path.resolve(__dirname, 'docs'),
+    chunkFilename: 'viteStatic/js/[name].[contenthash:9].chunk.js',
+    path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'vitesandbox',
       chunks: ['main'],
-      template: 'public/index.html'
+      template: 'public/vite.html',
+      filename: 'vite.html',
     }),
     new webpack.ProvidePlugin({
       process: 'process/browser',

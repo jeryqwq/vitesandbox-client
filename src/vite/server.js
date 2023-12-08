@@ -9,22 +9,22 @@ import {
   // ssrLoadModule,
   generateCodeFrame
 } from 'vite';
-import reactPlugin from '@vitejs/plugin-react';
-import pluginTransformReactJsx from '@babel/plugin-transform-react-jsx';
+// import reactPlugin from '@vitejs/plugin-react';
+// import pluginTransformReactJsx from '@babel/plugin-transform-react-jsx';
+
 import viteClientPlugin from './plugins/viteClientPlugin';
 import nodeResolvePlugin from './plugins/nodeResolvePlugin';
 import htmlPlugin from './plugins/htmlPlugin';
 import runOptimize from './optimize';
-
+import tsxPlugin from './plugins/tsxPlugin';
 function Nlt(id, text) {
   return text.replace(new RegExp(`(\\S+:)?/?@root/${id}`,'g'), '');
 }
 
 async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
-  const bablePlugins = [
-    pluginTransformReactJsx
-  ];
-
+  // const bablePlugins = [
+  //   pluginTransformReactJsx
+  // ];
   const vitePlugins = [
     // virtual plugin to provide vite client/env special entries (see below)
     viteClientPlugin(),
@@ -32,13 +32,17 @@ async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
     nodeResolvePlugin({
       tree: wc.tree
     }),
-    // add vite plugins you need here (e.g. vue, react, astro ...)
-    reactPlugin({
-      jsxRuntime: 'classic',
-      babel: {
-        plugins: bablePlugins
-      }
+    tsxPlugin({ // 适配tsx
+      tree: wc.tree,
+      cfg
     }),
+    // add vite plugins you need here (e.g. vue, react, astro ...)
+    // reactPlugin({
+    //   jsxRuntime: 'classic',
+    //   babel: {
+    //     plugins: bablePlugins
+    //   }
+    // }),
     htmlPlugin({
       tree: wc.tree
     })
@@ -54,7 +58,7 @@ async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
       resolve: {
         alias: cfg.alias
       }
-    }, 
+    },
     'serve'
   );
   const plugins = config.plugins;
