@@ -37,12 +37,12 @@ async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
       cfg
     }),
     // add vite plugins you need here (e.g. vue, react, astro ...)
-    reactPlugin({
-      jsxRuntime: 'classic',
-      babel: {
-        plugins: bablePlugins
-      }
-    }),
+    // reactPlugin({
+    //   jsxRuntime: 'classic',
+    //   babel: {
+    //     plugins: bablePlugins
+    //   }
+    // }),
     htmlPlugin({
       tree: wc.tree
     })

@@ -17,12 +17,23 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"
+
+export default ({ tree, cfg }) => {
+  var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"
 
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? Object.create(Object.getPrototypeOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
 var import_fs = __toESM(require("fs"));
-
 var runtimePublicPath = "/@react-refresh";
+const root = cfg.root;
+
+const id = root.split('/')[2]
+var preambleCode = `
+import RefreshRuntime from "/${id}/vite/${id}${runtimePublicPath}";
+RefreshRuntime.injectIntoGlobalHook(window)
+window.$RefreshReg$ = () => {}
+window.$RefreshSig$ = () => (type) => type
+window.__vite_plugin_react_preamble_installed__ = true
+`;
 var runtimeCode = `
 const exports = {}
 ${import_fs.default.readFileSync(runtimeFilePath, "utf-8")}
@@ -36,97 +47,88 @@ function debounce(fn, delay) {
 exports.performReactRefresh = debounce(exports.performReactRefresh, 16)
 export default exports
 `;
-export default ({ tree, cfg }) => ({
-  name: 'vite:transform:tsx',
-  enforce: 'pre',
-  resolveId(id) {
-    if (id === runtimePublicPath) {
-      return id;
-    }
-  },
-  load(id) {
-    if (id === runtimePublicPath) {
-      return runtimeCode;
-    }
-  },
-  // handleHotUpdate(ctx){ // 适配热更新
-  //   const { file, read, server } = ctx;
-  //   const content = read?.();
-  //   const root = cfg.root;
-  //   const filePath = file.replace(root, '');
-  //   if(/\.(jsx?|tsx?)$/.test(filePath)){
-  //     const filePath = filePath.replace(root, '');
-  //     const transformed = transformSync(tree[filePath], {
-  //       presets: [presetReact, [babelPresetTypescriptReact, { isTSX: true, allExtensions: true }]],
-  //       plugins: [[pluginTransformTs, { isTsx: true, allowNamespaces: true, loose: true }]]
-  //     });
-  //     return transformed.code;
-  //   }
-  //   const transformed = transformSync(content, {
-  //     presets: [presetReact, [babelPresetTypescriptReact, { isTSX: true, allExtensions: true }]],
-  //     plugins: [[pluginTransformTs, { isTsx: true, allowNamespaces: true, loose: true }]]
-  //   });
-  //   ctx.read = () => transformed.code;
-  //   // return ctx;
-  // },
-  load(id) {
-    const root = cfg.root;
-    if (id.startsWith(CLIENT_DIR)) { // 去除自身依赖
-      // return id;
-    }else if(id.startsWith(root)) { // 处理文件依赖
-      if(/\.(jsx?|tsx?)$/.test(id)){
-        const filePath = id.replace(root, '');
-        // console.log(filePath, tree[filePath]);
+  return [
 
-        const transformed = transformSync(tree[filePath], {
-          presets: [presetReact, [babelPresetTypescriptReact, { isTSX: true, allExtensions: true }]],
-          plugins: [[pluginTransformTs, { isTsx: true, allowNamespaces: true, loose: true }]]
-        });
-        // `
-        // ${`
-        // import RefreshRuntime from "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js";
-        
-        // let prevRefreshReg;
-        // let prevRefreshSig;
-        
-        // if (import.meta.hot) {
-        //   if (!window.__vite_plugin_react_preamble_installed__) {
-        //     throw new Error(
-        //       "@vitejs/plugin-react can't detect preamble. Something is wrong. " +
-        //       "See https://github.com/vitejs/vite-plugin-react/pull/11#discussion_r430879201"
-        //     );
-        //   }
-        
-        //   prevRefreshReg = window.$RefreshReg$;
-        //   prevRefreshSig = window.$RefreshSig$;
-        //   window.$RefreshReg$ = (type, id) => {
-        //     RefreshRuntime.register(type, __SOURCE__ + " " + id)
-        //   };
-        //   window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
-        // }`}
-        // ${transformed.code}
-        // ${`
-        // if (import.meta.hot) {
-        //   window.$RefreshReg$ = prevRefreshReg;
-        //   window.$RefreshSig$ = prevRefreshSig;
-        
-        //   import.meta.hot.accept();
-        //   if (!window.__vite_plugin_react_timeout) {
-        //     window.__vite_plugin_react_timeout = setTimeout(() => {
-        //       window.__vite_plugin_react_timeout = 0;
-        //       RefreshRuntime.performReactRefresh();
-        //     }, 30);
-        //   }
-        // }`}
-        // `
-        return `
-        import RefreshRuntime from "${runtimePublicPath}";
-        ${transformed.code}
-        console.log(RefreshRuntime,  '--')
-        // console.log(import.meta.hot)
-        `;
+    {
+      name: 'vite:transform:tsx',
+      enforce: 'pre',
+      load(id) {
+        if (id.startsWith(CLIENT_DIR)) { // 去除自身依赖
+          // return id;
+        }else if(id.startsWith(root)) { // 处理文件依赖
+          if(/\.(jsx?|tsx?)$/.test(id)){
+            const filePath = id.replace(root, '');
+            const transformed = transformSync(tree[filePath], {
+              presets: [presetReact, [babelPresetTypescriptReact, { isTSX: true, allExtensions: true }]],
+              plugins: [[pluginTransformTs, { isTsx: true, allowNamespaces: true, loose: true }]]
+            });
+            return `
+            import RefreshRuntime from "${runtimePublicPath}";
+    
+    let prevRefreshReg;
+    let prevRefreshSig;
+    
+    if (import.meta.hot) {
+      if (!window.__vite_plugin_react_preamble_installed__) {
+        throw new Error(
+          "plugin-react-ts can't detect preamble. Something is wrong. " +
+          "connect chenjie for more info "
+        );
+      }
+    
+      prevRefreshReg = window.$RefreshReg$;
+      prevRefreshSig = window.$RefreshSig$;
+      console.log(RefreshRuntime.register)
+      window.$RefreshReg$ = (type, id) => {
+        // RefreshRuntime.register(type, ${id} + " " + id)
+      };
+      window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+    };
+            ${transformed.code}
+            if (import.meta.hot) {
+              window.$RefreshReg$ = prevRefreshReg;
+              window.$RefreshSig$ = prevRefreshSig;
+              import.meta.hot.accept();
+              if (!window.__vite_plugin_react_timeout) {
+                window.__vite_plugin_react_timeout = setTimeout(() => {
+                  window.__vite_plugin_react_timeout = 0;
+                  RefreshRuntime.performReactRefresh();
+                }, 30);
+              }
+            }
+            `;
+          }
+        }
+      }
+    },
+    {
+      name: 'vite:refresh',
+      resolveId(id) {
+        if (id === runtimePublicPath) {
+          return id;
+        }
+      },
+      load(id) {
+        if (id === runtimePublicPath) {
+          return runtimeCode;
+        }
+      },
+      config: () => ({
+        resolve: {
+          dedupe: ["react", "react-dom"]
+        }
+      }),
+      transformIndexHtml() {
+        // if (!skipFastRefresh)
+        return [
+          {
+            tag: "script",
+            attrs: { type: "module" },
+            children: preambleCode
+          }
+        ];
       }
     }
-  }
-});
+  ]
+};
 
