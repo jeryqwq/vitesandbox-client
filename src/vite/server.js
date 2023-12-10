@@ -32,17 +32,17 @@ async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
     nodeResolvePlugin({
       tree: wc.tree
     }),
-    reactTsxPlugin({ // 适配tsx
-      tree: wc.tree,
-      cfg
-    }),
-    // add vite plugins you need here (e.g. vue, react, astro ...)
-    // reactPlugin({
-    //   jsxRuntime: 'classic',
-    //   babel: {
-    //     plugins: bablePlugins
-    //   }
+    // reactTsxPlugin({ // 适配tsx
+    //   tree: wc.tree,
+    //   cfg
     // }),
+    // add vite plugins you need here (e.g. vue, react, astro ...)
+    reactPlugin({
+      jsxRuntime: 'classic',
+      babel: {
+        plugins: bablePlugins
+      }
+    }),
     htmlPlugin({
       tree: wc.tree
     })
