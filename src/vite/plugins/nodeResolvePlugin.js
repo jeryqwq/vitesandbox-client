@@ -1,5 +1,6 @@
 // import path from 'path';
 import { dependencyNameRE, depBaseUrl, genPkgJson } from '$utils';
+var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"
 
 const nodeResolvePlugin = ({ tree }) => {
   let server;
@@ -10,6 +11,7 @@ const nodeResolvePlugin = ({ tree }) => {
       server = _server;
     },
     resolveId(id, _, { ssr }) {
+     
       if (/dist\/__require\.js$/.test(id)) {
         return '/dist/__require.js';
       }

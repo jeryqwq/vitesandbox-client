@@ -5,6 +5,24 @@ import { transformSync } from '@babel/core';
 import presetReact from '@babel/preset-react';
 import babelPresetTypescriptReact from "@babel/preset-typescript";
 
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"
+
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? Object.create(Object.getPrototypeOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
+var import_fs = __toESM(require("fs"));
+
+
 export default ({ tree, cfg }) => ({
   name: 'vite:transform:tsx',
   enforce: 'pre',
@@ -30,6 +48,7 @@ export default ({ tree, cfg }) => ({
   // },
   load(id) {
     const root = cfg.root;
+    console.log(id);
     if (id.startsWith(CLIENT_DIR)) { // 去除自身依赖
       // return id;
     }else if(id.startsWith(root)) { // 处理文件依赖
@@ -43,7 +62,7 @@ export default ({ tree, cfg }) => ({
         });
         // `
         // ${`
-        // import RefreshRuntime from "/@react-refresh";
+        // import RefreshRuntime from "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js";
         
         // let prevRefreshReg;
         // let prevRefreshSig;
@@ -78,8 +97,11 @@ export default ({ tree, cfg }) => ({
         //   }
         // }`}
         // `
-        return `${transformed.code}
-        console.log(import.meta.hot)
+        return `
+        // import RefreshRuntime from '${runtimeFilePath}'
+        ${transformed.code}
+        // console.dir(import.meta.hot.accept(),RefreshRuntime,  '--')
+        // console.log(import.meta.hot)
         `;
       }
     }
