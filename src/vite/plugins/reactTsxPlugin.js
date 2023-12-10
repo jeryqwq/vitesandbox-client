@@ -22,10 +22,33 @@ var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.dev
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? Object.create(Object.getPrototypeOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
 var import_fs = __toESM(require("fs"));
 
-
+var runtimePublicPath = "/@react-refresh";
+var runtimeCode = `
+const exports = {}
+${import_fs.default.readFileSync(runtimeFilePath, "utf-8")}
+function debounce(fn, delay) {
+  let handle
+  return () => {
+    clearTimeout(handle)
+    handle = setTimeout(fn, delay)
+  }
+}
+exports.performReactRefresh = debounce(exports.performReactRefresh, 16)
+export default exports
+`;
 export default ({ tree, cfg }) => ({
   name: 'vite:transform:tsx',
   enforce: 'pre',
+  resolveId(id) {
+    if (id === runtimePublicPath) {
+      return id;
+    }
+  },
+  load(id) {
+    if (id === runtimePublicPath) {
+      return runtimeCode;
+    }
+  },
   // handleHotUpdate(ctx){ // 适配热更新
   //   const { file, read, server } = ctx;
   //   const content = read?.();
@@ -48,7 +71,6 @@ export default ({ tree, cfg }) => ({
   // },
   load(id) {
     const root = cfg.root;
-    console.log(id);
     if (id.startsWith(CLIENT_DIR)) { // 去除自身依赖
       // return id;
     }else if(id.startsWith(root)) { // 处理文件依赖
@@ -98,9 +120,9 @@ export default ({ tree, cfg }) => ({
         // }`}
         // `
         return `
-        // import RefreshRuntime from '${runtimeFilePath}'
+        import RefreshRuntime from "${runtimePublicPath}";
         ${transformed.code}
-        // console.dir(import.meta.hot.accept(),RefreshRuntime,  '--')
+        console.log(RefreshRuntime,  '--')
         // console.log(import.meta.hot)
         `;
       }
