@@ -14,15 +14,16 @@ function initialize() {
 }
 
 function build(e) {
-  console.log(e, 'build');
+  // console.log(e, 'build');
   return initialize().then(() => esbuild.build(e));
 }
 
-function transform(e, r) {
-  console.log(e, r, 'transform');
-  return initialize().then(() => esbuild.transform(e, {
+async function transform(e, r) {
+  const res = await initialize().then(() => esbuild.transform(e, {
     ...r
   }));
+  // console.log(res, 'transform');
+  return res;
 }
 
 function formatMessages(e, r) {

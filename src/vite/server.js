@@ -13,10 +13,10 @@ import reactPlugin from '@vitejs/plugin-react';
 import pluginTransformReactJsx from '@babel/plugin-transform-react-jsx';
 
 import viteClientPlugin from './plugins/viteClientPlugin';
-import nodeResolvePlugin from './plugins/nodeResolvePlugin';
+// import nodeResolvePlugin from './plugins/nodeResolvePlugin';
 import htmlPlugin from './plugins/htmlPlugin';
 import runOptimize from './optimize';
-import reactTsxPlugin from './plugins/reactTsxPlugin';
+// import reactTsxPlugin from './plugins/reactTsxPlugin';
 function Nlt(id, text) {
   return text.replace(new RegExp(`(\\S+:)?/?@root/${id}`,'g'), '');
 }
@@ -27,11 +27,16 @@ async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
   ];
   const vitePlugins = [
     // virtual plugin to provide vite client/env special entries (see below)
-    viteClientPlugin(),
-    // virtual plugin to resolve NPM dependencies, e.g. using unpkg, skypack or another provider (browser-vite only handles project files)
-    nodeResolvePlugin({
+    // htmlPlugin({
+    //   tree: wc.tree
+    // }),
+    viteClientPlugin({
       tree: wc.tree
     }),
+    // virtual plugin to resolve NPM dependencies, e.g. using unpkg, skypack or another provider (browser-vite only handles project files)
+    // nodeResolvePlugin({
+    //   tree: wc.tree
+    // }),
     // reactTsxPlugin({ // 适配tsx
     //   tree: wc.tree,
     //   cfg
@@ -42,9 +47,6 @@ async function createServer(channel, { cfg, wc, baseUrl }, addInitError) {
       babel: {
         plugins: bablePlugins
       }
-    }),
-    htmlPlugin({
-      tree: wc.tree
     })
   ];
   // 暂时只支持 react

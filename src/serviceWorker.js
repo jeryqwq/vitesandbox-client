@@ -50,15 +50,15 @@ registerRoute(
 //   })
 // );
 
-registerRoute(
-  /^https:\/\/esm\.sh/,
-  new CacheFirst({ 
-    cacheName: 'vite-dependency-files-cache',
-    plugins: [
-      new ExpirationPlugin({
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 day
-        maxEntries: 500
-      })
-    ]
-  })
-);
+// registerRoute(
+//   /^https:\/\/esm\.sh/,
+//   new CacheFirst({ 
+//     cacheName: 'vite-dependency-files-cache',
+//     plugins: [
+//       new ExpirationPlugin({
+//         maxAgeSeconds: 7 * 24 * 60 * 60, // 7 day
+//         maxEntries: 500
+//       })
+//     ]
+//   })
+// );

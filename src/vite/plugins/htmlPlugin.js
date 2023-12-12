@@ -8,7 +8,6 @@ export function resourceIsCss(resource) {
 
   return (match && match[1] === 'css') || resource.includes('fonts.googleapis');
 }
-
 const htmlPlugin = ({ tree }) => ({
   name: 'vite:html:transform',
   transformIndexHtml: {
