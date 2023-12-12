@@ -3,15 +3,15 @@ import { CLIENT_DIR } from 'vite';
 import pluginTransformTs from '@babel/plugin-transform-typescript';
 import { transformSync } from '@babel/core';
 import presetReact from '@babel/preset-react';
-import babelPresetTypescriptReact from "@babel/preset-typescript";
+import babelPresetTypescriptReact from '@babel/preset-typescript';
 
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+const __defProp = Object.defineProperty;
+const __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+const __getOwnPropNames = Object.getOwnPropertyNames;
+const __hasOwnProp = Object.prototype.hasOwnProperty;
+const __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === 'object' || typeof from === 'function') {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
         __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
@@ -19,24 +19,24 @@ var __copyProps = (to, from, except, desc) => {
 };
 
 export default ({ tree, cfg }) => {
-  var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"
+  const runtimeFilePath = '/node_modules/react-refresh/cjs/react-refresh-runtime.development.js';
 
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? Object.create(Object.getPrototypeOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
-var import_fs = __toESM(require("fs"));
-var runtimePublicPath = "/@react-refresh";
-const root = cfg.root;
+  const __toESM = (mod, isNodeMode, target) => (target = mod != null ? Object.create(Object.getPrototypeOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, 'default', { value: mod, enumerable: true }) : target, mod));
+  const import_fs = __toESM(require('fs'));
+  const runtimePublicPath = '/@react-refresh';
+  const root = cfg.root;
 
-const id = root.split('/')[2]
-var preambleCode = `
+  const id = root.split('/')[2];
+  const preambleCode = `
 import RefreshRuntime from "/${id}/vite/${id}${runtimePublicPath}";
 RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 `;
-var runtimeCode = `
+  const runtimeCode = `
 const exports = {}
-${import_fs.default.readFileSync(runtimeFilePath, "utf-8")}
+${import_fs.default.readFileSync(runtimeFilePath, 'utf-8')}
 function debounce(fn, delay) {
   let handle
   return () => {
@@ -115,20 +115,20 @@ export default exports
       },
       config: () => ({
         resolve: {
-          dedupe: ["react", "react-dom"]
+          dedupe: ['react', 'react-dom']
         }
       }),
       transformIndexHtml() {
         // if (!skipFastRefresh)
         return [
           {
-            tag: "script",
-            attrs: { type: "module" },
+            tag: 'script',
+            attrs: { type: 'module' },
             children: preambleCode
           }
         ];
       }
     }
-  ]
+  ];
 };
 

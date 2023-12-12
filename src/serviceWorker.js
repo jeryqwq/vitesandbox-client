@@ -38,7 +38,7 @@ registerRoute(
 );
 
 // registerRoute(
-//   /^https:\/\/mcuking\.github\.io\/vitesandbox-client\/static\/js\//,
+//   /^http:\/\/127.0.0.1:8888\/vitesandbox-client\/static\/js\//,
 //   new CacheFirst({
 //     cacheName: 'vite-static-root-cache',
 //     plugins: [

@@ -5,7 +5,7 @@ const packageJsonPath = '/package.json';
 
 const sandboxConfigJsonPath = '/sandbox.config.json';
 
-const depBaseUrl = 'https://esm.sh';
+const depBaseUrl = 'http://localhost:9000';
 
 // 'react@16.8.0/cjs/react.development.js' -> 
 // ['react/cjs/react.development.js', 'react', '16.8.0', '/cjs/react.development.js', ...]

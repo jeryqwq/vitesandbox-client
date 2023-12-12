@@ -1,23 +1,28 @@
 import * as esbuild from 'esbuild-wasm';
 
 let initializePromise;
+import { depBaseUrl } from '$utils';
 
 function initialize() {
   if (!initializePromise) {
     initializePromise = esbuild.initialize({
       worker: typeof Worker != 'undefined',
-      wasmURL: 'https://www.unpkg.com/esbuild-wasm@0.14.47/esbuild.wasm' // todo: version
+      wasmURL: 'http://localhost:3006/esbuild.wasm' // todo: version
     });
   }
   return initializePromise;
 }
 
 function build(e) {
+  console.log(e, 'build');
   return initialize().then(() => esbuild.build(e));
 }
 
 function transform(e, r) {
-  return initialize().then(() => esbuild.transform(e, r));
+  console.log(e, r, 'transform');
+  return initialize().then(() => esbuild.transform(e, {
+    ...r
+  }));
 }
 
 function formatMessages(e, r) {

@@ -1,6 +1,5 @@
 // import path from 'path';
 import { dependencyNameRE, depBaseUrl, genPkgJson } from '$utils';
-var runtimeFilePath = "/node_modules/react-refresh/cjs/react-refresh-runtime.development.js"
 
 const nodeResolvePlugin = ({ tree }) => {
   let server;
@@ -11,12 +10,10 @@ const nodeResolvePlugin = ({ tree }) => {
       server = _server;
     },
     resolveId(id, _, { ssr }) {
-     
       if (/dist\/__require\.js$/.test(id)) {
         return '/dist/__require.js';
       }
-      const dependencyInfos = dependencyNameRE.exec(id);
-
+      const dependencyInfos = dependencyNameRE.exec(id.replace('http://localhost:9000/', ''));
       if (dependencyInfos) {
         if (ssr) {
           return {
@@ -39,7 +36,6 @@ const nodeResolvePlugin = ({ tree }) => {
           // server?._registerMissingImport?.call(server, id, id, undefined);
           // return path.join('/node_modules', dependencyInfos[1], 'index.js');
         }
-        
         const [, dependencyName, , pathname] = dependencyInfos;
         const { pkgJson, parseError } = genPkgJson(tree);
         if (!parseError) {
@@ -47,9 +43,8 @@ const nodeResolvePlugin = ({ tree }) => {
           if (!dependencies[dependencyName]) {
             throw new Error(`${dependencyName} not implicited in package.json`);
           }
-
           return {
-            id: `https://esm.sh/${dependencyName}@${dependencies[dependencyName]}${pathname}`,
+            id: `${depBaseUrl}/${dependencyName}@${dependencies[dependencyName]}${pathname || ''}`,
             external: true
           };
         }
